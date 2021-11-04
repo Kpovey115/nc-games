@@ -1,5 +1,5 @@
 
-const {fetchCategories, fetchReviews, changeReview, fetchAllReviews, fetchComments} = require('../models/app.models');
+const {fetchCategories, fetchReviews, changeReview, fetchAllReviews, fetchComments, makeNewComment} = require('../models/app.models');
 
 
 
@@ -66,4 +66,12 @@ exports.getComments = (req, res, next) => {
     .catch(err => {
         next(err);
     })
+}
+
+exports.newComment = (req, res, next) => {
+    const {body} = req;
+    const {review_id} = req.params;
+    
+
+    makeNewComment(body, review_id)
 }

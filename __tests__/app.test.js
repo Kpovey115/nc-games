@@ -77,7 +77,7 @@ describe('Building End point testing for both happy and sad path', function () {
             });
         })
 
-        // random console logged errors started here
+        
     describe('Errors for GET api/reviews/:review_id', function () {
 
         test('Status:400, invalid team_id i.e "hello', function () {
@@ -367,7 +367,7 @@ describe('Building End point testing for both happy and sad path', function () {
                     )
                 })
 
-            })// then block
+            })
         })
     
         test('Status: 404, review_id that does not exist', function () {
@@ -378,12 +378,39 @@ describe('Building End point testing for both happy and sad path', function () {
                 expect(body.msg).toBe('Invalid id');
             })
         })
+
+        test('Status: 404, review_id that does not exist', function () {
+            return request(app)
+            .get('/api/reviews/hello/comments')
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Invalid request');
+            })
+        })
     })
 
-    describe('POST /api/reviews:review_id/comments', function () {
+    describe('POST /api/reviews/:review_id/comments sends a username and body key inside a object and creates a new comment within the comment table', function () {
         
+        test.only('Status:201, will add a new comment to the comment table', function () {
+            const data = {username: 'philippaclaire9', body: 'This is a test but will it work?'}
+            return request(app)
+            .post('/api/reviews/2/comments')
+            .send(data)
+            .expect(201)
+            .then(({body}) => {
+                const newComment = {
+                    body: 'this is a test but will it work?',
+                    votes: 0,
+                    author: 'philippaclaire9',
+                    review_id: 2,
+                    created_at: expect.any(String)
+                }
+                const { data } = body
+                expect(data).toEqual(newComment);
+            })
+        })
     })
 
 
-
-}) // end of main describe block
+    
+})                 

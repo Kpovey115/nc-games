@@ -1,4 +1,5 @@
 const db = require('../db/connection')
+const format = require('pg-format');
 
 
 exports.fetchCategories = () => {
@@ -104,5 +105,22 @@ exports.fetchComments = (id) => {
             return Promise.reject({status:404, msg: 'Invalid id'});
         }
         return rows;
+    })
+}
+
+exports.makeNewComment = (newObj, id) => {
+    const {username, body} = newObj
+
+    const queryStr = `INSERT INTO comments
+    (author, review_id, body, created_at, votes)
+    VALUES
+    ('${username}', ${id}, '${body}', ,0)
+    RETURNING*;`
+    
+
+    return db
+    .query(queryStr)
+    .then(({rows}) => {
+        console.log(rows);
     })
 }
