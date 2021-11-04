@@ -48,10 +48,8 @@ exports.fetchAllReviews = (sort_by = 'owner', order = "DESC", category = "euroga
     const queryStr = `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count
     FROM reviews
     LEFT JOIN comments 
-    ON reviews.review_id = comments.review_id`
-
-
-    `GROUP BY reviews.review_id
+    ON reviews.review_id = comments.review_id
+    GROUP BY reviews.review_id
     ORDER BY ${sort_by} ${order}`;
     
 
