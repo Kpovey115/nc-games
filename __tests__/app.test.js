@@ -4,6 +4,7 @@ const  seed  = require('../db/seeds/seed.js');
 const app = require('../app');
 const request = require('supertest');
 const categories = require('../db/data/test-data/categories.js');
+const { get } = require('superagent');
 
 
 
@@ -333,7 +334,7 @@ describe('Building End point testing for both happy and sad path', function () {
                     })     
             })
 
-            test.only('Status: 400, GET /api/reviews?category=bobs incorrect value for the category', function () {
+            test('Status: 400, GET /api/reviews?category=bobs incorrect value for the category', function () {
                 return request(app)
                 .get('/api/reviews?category=bobs')
                 .expect(400)
@@ -343,6 +344,46 @@ describe('Building End point testing for both happy and sad path', function () {
             })
         })
     })
+
+    describe('GET /api/reviews/:review_id/comments gets all comments assigned to a review_id', function () {
+        test('Status: 200, GET /api/reviews/:1/comments test happy path for fetching all the comments on the review', function () {
+            return request(app)
+            .get('/api/reviews/2/comments')
+            .expect(200)
+            .then(({body}) => {
+
+                const {data} = body;
+                expect(Array.isArray(data)).toBe(true);
+                expect(data.length).toBe(3);
+                data.forEach(object => {
+                    expect(object).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String)
+                        })
+                    )
+                })
+
+            })// then block
+        })
+    
+        test('Status: 404, review_id that does not exist', function () {
+            return request(app)
+            .get('/api/reviews/9000000/comments')
+            .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe('Invalid id');
+            })
+        })
+    })
+
+    describe('POST /api/reviews:review_id/comments', function () {
+        
+    })
+
 
 
 }) // end of main describe block

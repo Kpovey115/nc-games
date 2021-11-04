@@ -93,3 +93,16 @@ exports.changeReview = (id, object) => {
         return rows;
     })
 }
+
+exports.fetchComments = (id) => {
+    
+    return db
+    .query(`SELECT * FROM comments
+    WHERE review_id = ($1)`,[id])
+    .then(({rows}) => {
+        if(rows.length === 0){
+            return Promise.reject({status:404, msg: 'Invalid id'});
+        }
+        return rows;
+    })
+}

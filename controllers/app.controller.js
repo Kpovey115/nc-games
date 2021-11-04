@@ -1,5 +1,5 @@
 
-const {fetchCategories, fetchReviews, changeReview, fetchAllReviews} = require('../models/app.models');
+const {fetchCategories, fetchReviews, changeReview, fetchAllReviews, fetchComments} = require('../models/app.models');
 
 
 
@@ -49,6 +49,19 @@ exports.updateReview = (req, res, next) => {
     changeReview(review_id, body)
     .then((rows)=> {
         res.status(202).send({rows});
+    })
+    .catch(err => {
+        next(err);
+    })
+}
+
+exports.getComments = (req, res, next) => {
+    const {review_id} = req.params;
+    
+    
+    fetchComments(review_id)
+    .then(data => {
+        res.status(200).send({data})
     })
     .catch(err => {
         next(err);
