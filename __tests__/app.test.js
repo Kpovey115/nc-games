@@ -305,9 +305,9 @@ describe('Building End point testing for both happy and sad path', function () {
 
         describe('Introduces the category query which filters through reviews by the category', function () {
 
-            test.only('200: GET /api/reviews?category=eurogame retrieves all games with the category column = to euro games', function () {
+            test('Status: 200, GET /api/reviews?category=eurogame retrieves all games with the category column = to euro games', function () {
                 return request(app)
-                .get('/api/reviews?category=eurogame')
+                .get('/api/reviews?category=dexterity')
                 .expect(200)
                 .then(({body}) => {
                     const {data} = body;
@@ -331,6 +331,15 @@ describe('Building End point testing for both happy and sad path', function () {
                         )
                         })
                     })     
+            })
+
+            test.only('Status: 400, GET /api/reviews?category=bobs incorrect value for the category', function () {
+                return request(app)
+                .get('/api/reviews?category=bobs')
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toBe('Invalid option');
+                })
             })
         })
     })

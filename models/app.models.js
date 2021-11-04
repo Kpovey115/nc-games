@@ -34,7 +34,7 @@ exports.fetchReviews = (id) => {
     })
 }
 
-exports.fetchAllReviews = (sort_by = 'owner', order = "DESC", category = "eurogame") => {
+exports.fetchAllReviews = (sort_by = 'owner', order = "DESC", category ) => {
     
     
     if(!['title', 'designer', 'owner', 'review_id', 'category', 'created_at', 'votes', 'comments.review_id', 'review_body', 'review_img_url'].includes(sort_by))
@@ -45,16 +45,24 @@ exports.fetchAllReviews = (sort_by = 'owner', order = "DESC", category = "euroga
     }
 
 
-    const queryStr = `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count
+    let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count
     FROM reviews
     LEFT JOIN comments 
     ON reviews.review_id = comments.review_id
+    ` 
+    if (category !== undefined){
+        queryStr += `WHERE reviews.category = '${category}'`
+    }
+   queryStr += `
     GROUP BY reviews.review_id
     ORDER BY ${sort_by} ${order}`;
     
 
     return db.query(queryStr)
     .then(({rows}) => {
+        if(rows.length ===0){
+            return Promise.reject({status:400, msg: 'Invalid option'})
+        }
         return rows;
     })
 }
@@ -82,7 +90,6 @@ exports.changeReview = (id, object) => {
         RETURNING*;`,[newVotes,id])
     })
     .then(({rows}) => {
-        
         return rows;
     })
 }
