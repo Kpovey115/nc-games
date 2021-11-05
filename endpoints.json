@@ -30,6 +30,82 @@
         }
       ]
     }
-  }
-  
+  },
+    "GET /api/reviews/:review_id": {
+    "description": "servers an array of a single review, requested by the unique identify of 'review_id'",
+    "exampleResponse": {
+      "reviews": [
+        {
+          "title": "One Night Ultimate Werewolf",
+          "designer": "Akihisa Okui",
+          "owner": "happyamy2016",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          "category": "hidden-roles",
+          "created_at": 1610964101251,
+          "votes": 5
+        }
+      ]
+    }
+  },
+
+  "PATCH /api/reviews/:review_id": {
+    "description": "Gives the ability to update a reviews.",
+    "Columns currently supported": ["votes"],
+    "example": {
+      "path": "/api/reviews/2",
+      "send": {"updated_votes" :20},
+      "original votes": 5,
+      "result": {
+        "title": "Jenga",
+        "designer": "'Leslie Scott'",
+        "owner": "'philippaclaire9'",
+        "review_img_url":
+        "'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png'",
+        "review_body": "'Fiddly fun for all the family'",
+        "category": "'dexterity'",
+        "created_at": 1610964101251,
+        "votes": "25",
+        "review_id": 2
+        }
+    }
+  },
+
+  "GET /api/reviews/:review_id/comments": {
+    "description": "brings all comments associated with a review_id nested inside of an array",
+    "example": {
+      "path": "/api/reviews/2/comments",
+      "result": 
+        [
+          {
+            "body": "'I loved this game too!'",
+            " votes": 16,
+            "author": "'bainesface'",
+            "review_id": 2,
+            "created_at": 1511354613389
+          }
+      ]
+    
+    }
+  },
+
+  "POST /api/reviews/:review/comments": {
+    "description": "allows user to post new comment under a review",
+    "example": {
+      "path": "/api/reviews/2/comments",
+      "send requirements": "Takes a username and body",
+      "send": {"username": "test", "body": "This is the best game!"},
+      "result": {
+        "body": "'This is the best game!",
+        "votes": 0,
+        "author": "test",
+        "review_id": 2,
+        "created_at": 1511354613389
+        
+    }
+    }
+  },
+
+"DELETE /api/comments/:comment_id": {
+  "description": "deletes a comment by its unique identifier"
+}
 }
