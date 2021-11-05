@@ -449,4 +449,33 @@ describe('Building End point testing for both happy and sad path', function () {
         })
     })
 
+    describe('GET /api/users/:username', function () {
+
+        test('Status: 200, GET /api/users/philippaclaire9 should bring back a single user object from the user table database, using a parametric endpoint via the username column', function () {
+            const user = "'philippaclaire9'"
+            return request(app)
+            .get(`/api/users/${user}`)
+            .expect(200)
+            .then(({body}) => {
+                const {data} = body;
+                expect(Array.isArray(data)).toBe(true);
+                expect(data[0]).toEqual({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                })
+            })
+        })
+
+        test.only('Status: 404, GET /api/users/potato Should return back an empty array and will throw a custom error.', function () {
+            const user = "'potato'"
+            return request(app)
+            .get(`/api/users/${user}`)
+            .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe('Invalid Username');
+            })
+        })
+    })
+
 })// end of main describe block            

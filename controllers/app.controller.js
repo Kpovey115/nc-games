@@ -1,5 +1,5 @@
 
-const {fetchCategories, fetchReviews, changeReview, fetchAllReviews, fetchComments, makeNewComment, removeComment} = require('../models/app.models');
+const {fetchCategories, fetchReviews, changeReview, fetchAllReviews, fetchComments, makeNewComment, removeComment, fetchUser} = require('../models/app.models');
 const endpoints = require('../endpoints.json');
 
 
@@ -26,12 +26,8 @@ exports.getReviews = (req, res, next) => {
     })
 }
 
-exports.getAllReviews = (req, res, next) => {
-    
-    const {sort_by, order, category} = req.query;
-    
-    
-    
+exports.getAllReviews = (req, res, next) => {    
+    const {sort_by, order, category} = req.query;   
     fetchAllReviews(sort_by, order, category)
     .then(data => {
         res.status(200).send({data});
@@ -100,4 +96,18 @@ exports.deleteComment = (req, res, next) => {
 
 exports.getEndpoints = (req, res, next) => {
     res.status(200).send({data: endpoints});
+}
+
+exports.getUser = (req, res, next) => {
+
+const {username} = req.params;
+
+
+    fetchUser(username)
+    .then(data => {
+        res.status(200).send({data});
+    })
+    .catch(err => {
+        next(err);
+    })
 }
