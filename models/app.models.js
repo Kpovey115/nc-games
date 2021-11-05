@@ -111,16 +111,34 @@ exports.fetchComments = (id) => {
 exports.makeNewComment = (newObj, id) => {
     const {username, body} = newObj
 
+    if(typeof body !== 'string'){
+        return Promise.reject({status: 400, msg: 'Invalid option'})
+    }
+
     const queryStr = `INSERT INTO comments
-    (author, review_id, body, created_at, votes)
+    (author, review_id, body)
     VALUES
-    ('${username}', ${id}, '${body}', ,0)
+    ('${username}', ${id}, '${body}')
     RETURNING*;`
     
 
     return db
     .query(queryStr)
     .then(({rows}) => {
-        console.log(rows);
+        return rows;
+    })
+}
+
+exports.removeComment = (id) => {
+    
+    return db
+    .query(`DELETE FROM comments
+    WHERE comment_id = ($1)`, [id])
+    .then(() => {
+        return db
+        .query(`SELECT * FROM comments`)
+    })
+    .then(({rows}) => {
+        return rows;
     })
 }

@@ -1,6 +1,6 @@
 
-const {fetchCategories, fetchReviews, changeReview, fetchAllReviews, fetchComments, makeNewComment} = require('../models/app.models');
-
+const {fetchCategories, fetchReviews, changeReview, fetchAllReviews, fetchComments, makeNewComment, removeComment} = require('../models/app.models');
+const endpoints = require('../endpoints.json');
 
 
 exports.getCategories = (req, res, next) => {
@@ -74,4 +74,30 @@ exports.newComment = (req, res, next) => {
     
 
     makeNewComment(body, review_id)
+    .then((data) => {
+        res.status(201).send({data})
+    })
+    .catch(err => {
+        next(err);
+    })
+}
+
+exports.deleteComment = (req, res, next) => {
+    
+    const {comment_id} = req.params;
+    
+
+
+    removeComment(comment_id)
+    .then(data => {
+       // console.log(data);
+        res.status(204).send({data});
+    })
+    .catch(err => {
+        next(err);
+    })
+}
+
+exports.getEndpoints = (req, res, next) => {
+    res.status(200).send({data: endpoints});
 }

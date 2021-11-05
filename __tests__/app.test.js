@@ -391,7 +391,7 @@ describe('Building End point testing for both happy and sad path', function () {
 
     describe('POST /api/reviews/:review_id/comments sends a username and body key inside a object and creates a new comment within the comment table', function () {
         
-        test.only('Status:201, will add a new comment to the comment table', function () {
+        test('Status:201, will add a new comment to the comment table', function () {
             const data = {username: 'philippaclaire9', body: 'This is a test but will it work?'}
             return request(app)
             .post('/api/reviews/2/comments')
@@ -399,18 +399,54 @@ describe('Building End point testing for both happy and sad path', function () {
             .expect(201)
             .then(({body}) => {
                 const newComment = {
-                    body: 'this is a test but will it work?',
+                    body: 'This is a test but will it work?',
                     votes: 0,
                     author: 'philippaclaire9',
                     review_id: 2,
-                    created_at: expect.any(String)
+                    created_at: expect.any(String),
+                    comment_id: expect.any(Number)
                 }
                 const { data } = body
-                expect(data).toEqual(newComment);
+                expect(data[0]).toEqual(newComment);
+            })
+        })
+
+        test('Status:400, will add a new comment to the comment table, will cause error due to wrong data type on body', function () {
+            const data = {username: 'philippaclaire9', body: 5}
+            return request(app)
+            .post('/api/reviews/2/comments')
+            .send(data)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Invalid option')
+            })
+        })
+
+
+
+    })
+
+    describe('DELETE /api/comments/:comment_id deletes a comment from the comment table by a chosen comment_id', function () {
+        
+        test("Status: 204, /api/comments/1 deletes the comment from the comments table and doesn't return anything", function () {
+
+            return request(app)
+            .delete('/api/comments/1')
+            .expect(204)
+        })
+    })
+    
+    describe('GET /api/ returns a JSON of all available end points', function () {
+
+        test('Status: 200, GET /api/ brings a Json file to the users attention', function () {
+            return request(app)
+            .get('/api')
+            .expect(200)
+            .then(({body}) => {
+                const {data} = body;
+                expect(data).not.toBe(null || undefined)
             })
         })
     })
 
-
-    
-})                 
+})// end of main describe block            
